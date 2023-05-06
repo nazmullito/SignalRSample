@@ -32,7 +32,7 @@ btn_slytherin.addEventListener("click", function (event) {
 btn_hufflepuff.addEventListener("click", function (event) {
     connectionHouse.send("JoinHouse", "Hufflepuff");
     event.preventDefault();
-}) 
+})
 
 btn_ravenclaw.addEventListener("click", function (event) {
     connectionHouse.send("JoinHouse", "Ravenclaw");
@@ -61,6 +61,58 @@ btn_un_ravenclaw.addEventListener("click", function (event) {
     event.preventDefault();
 })
 
+connectionHouse.on("subscriptionStatus", (strGroupsJoined, houseName, hasSubscribed) => {
+    lbl_houseJoined.innerText = strGroupsJoined;
+
+    if (hasSubscribed) {
+        //subscribe to
+        switch (houseName) {
+            case 'slytherin':
+                btn_slytherin.style.display = "none";
+                btn_un_slytherin.style.display = "";
+                break;
+            case 'gryffindor':
+                btn_gryffindor.style.display = "none";
+                btn_un_gryffindor.style.display = "";
+                break;
+            case 'hufflepuff':
+                btn_hufflepuff.style.display = "none";
+                btn_un_hufflepuff.style.display = "";
+                break;
+            case 'ravenclaw':
+                btn_ravenclaw.style.display = "none";
+                btn_un_ravenclaw.style.display = "";
+                break;
+            default:
+                break;
+        }
+        toastr.success(`You have Subscribed Successfully. ${houseName}`);
+    }
+    else {
+        //unsubscribe
+        switch (houseName) {
+            case 'slytherin':
+                btn_slytherin.style.display = "";
+                btn_un_slytherin.style.display = "none"; 
+                break;
+            case 'gryffindor':
+                btn_gryffindor.style.display = "";
+                btn_un_gryffindor.style.display = "none";
+                break;
+            case 'hufflepuff':
+                btn_hufflepuff.style.display = "";
+                btn_un_hufflepuff.style.display = "none";
+                break;
+            case 'ravenclaw':
+                btn_ravenclaw.style.display = "";
+                btn_un_ravenclaw.style.display = "none";
+                break;
+            default:
+                break;
+        }
+        toastr.success(`You have Unsubscribed Successfully. ${houseName}`);
+    }
+})
 
 //start connection
 function fulfilled() {

@@ -1,5 +1,5 @@
 ﻿var dataTable;
-//var connectionOrder = new signalR.HubConnectionBuilder().withUrl("/hubs/order").build();
+var connectionOrder = new signalR.HubConnectionBuilder().withUrl("/hubs/order").build();
 
 
 
@@ -35,16 +35,16 @@ function loadDataTable() {
     });
 }
 
-//connectionOrder.on("newOrder", () => {
-//    dataTable.ajax.reload();
-//    toastr.success("New order recived");
-//});
+connectionOrder.on("newOrder", () => {
+    dataTable.ajax.reload();
+    toastr.success("New order recived");
+});
 
-//function fulfilled() {
-//    //do something on start
-//}
-//function rejected() {
-//    //rejected logs
-//}
+function fulfilled() {
+    //do something on start
+}
+function rejected() {
+    //rejected logs
+}
 
-//connectionOrder.start().then(fulfilled, rejected);
+connectionOrder.start().then(fulfilled, rejected);

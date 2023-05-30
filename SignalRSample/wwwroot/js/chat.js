@@ -16,6 +16,10 @@ connection.on("ReceiveAddRoomMessage", function (maxRoom, roomId, roomName, user
     fillRoomDropDown();
 });
 
+connection.on("ReceiveDeleteRoomMessage", function (maxRoom, roomId, roomName, userId, userName) {
+    addMessage(`${userName} has deleted room  ${roomName}`);
+});
+
 
 function addnewRoom(maxRoom) {
     let createRoomName = document.getElementById('createRoomName');
@@ -38,6 +42,39 @@ function addnewRoom(maxRoom) {
             /*ADD ROOM COMPLETED SUCCESSFULLY*/
             connection.send("SendAddRoomMessage", maxRoom, json.id, json.name);
             createRoomName.value = '';
+        },
+        error: function (xhr) {
+            alert('error');
+        }
+    })
+}
+
+function deleteRoom() {
+    let ddlDelRoom = document.getElementById('ddlDelRoom');
+    var roomName = ddlDelRoom.options[ddlDelRoom.selectedIndex].text;
+    let text = `Do you want to delete Chat Room ${roomName}?`;
+    if (confirm(text) == false) {
+        return;
+    }
+
+    if (roomName == null && roomName == '') {
+        return;
+    }
+    let roomId = ddlDelRoom.value;
+
+    $.ajax({
+        url: `/ChatRooms/DeleteChatRoom/${roomId}`,
+        dataType: "json",
+        type: "DELETE",
+        contentType: 'application/json;',
+        async: true,
+        processData: false,
+        cache: false,
+        success: function (json) {
+
+            /*ADD ROOM COMPLETED SUCCESSFULLY*/
+            connection.send("SendDeleteRoomMessage ", json.deleted, json.selected, roomName);
+            fillRoomDropDown();
         },
         error: function (xhr) {
             alert('error');

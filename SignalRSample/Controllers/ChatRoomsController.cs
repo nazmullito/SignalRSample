@@ -62,25 +62,27 @@ namespace SignalRSample.Controllers
             return CreatedAtAction("GetChatRoom", new { id = chatRoom.Id }, chatRoom);
         }
 
-        // DELETE: api/ChatRooms/5
-        [HttpDelete("{id}")]
-        [Route("/[controller]/DeleteChatRoom/{id }")]
-        public async Task<IActionResult> DeleteChatRoom(int id)
-        {
-            if (_context.ChatRoom == null)
-            {
-                return NotFound();
-            }
-            var chatRoom = await _context.ChatRoom.FindAsync(id);
-            if (chatRoom == null)
-            {
-                return NotFound();
-            }
+		// DELETE: api/ChatRooms/5
+		[HttpDelete("{id}")]
+		[Route("/[controller]/DeleteChatRoom/{id}")]
+		public async Task<IActionResult> DeleteChatRoom(int id)
+		{
+			if (_context.ChatRoom == null)
+			{
+				return NotFound();
+			}
+			var chatRoom = await _context.ChatRoom.FindAsync(id);
+			if (chatRoom == null)
+			{
+				return NotFound();
+			}
 
-            _context.ChatRoom.Remove(chatRoom);
-            await _context.SaveChangesAsync();
+			_context.ChatRoom.Remove(chatRoom);
+			await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
-    }
+			var room = await _context.ChatRoom.FirstOrDefaultAsync();
+
+			return Ok(new { deleted = id, selected = (room == null ? 0 : room.Id) });
+		}
+	}
 }

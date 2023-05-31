@@ -64,20 +64,28 @@ namespace SignalRSample.Hubs
             await Clients.All.SendAsync("ReceiveDeleteRoomMessage", deleted, selected, roomName, userName);
         }
 
-        //public async Task SendMessageToAll(string user, string message)
-        //{
-        //    await Clients.All.SendAsync("MessageReceived", user, message);
-        //}
+		public async Task SendPublicMessage(int roomId, string message, string roomName)
+		{
+			var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var userName = _db.Users.FirstOrDefault(u => u.Id == UserId).UserName;
 
-        //[Authorize]
-        //public async Task SendMessageToReceiver(string sender, string receiver, string message)
-        //{
-        //    var userId = _db.Users.FirstOrDefault(u => u.Email.ToLower() == receiver.ToLower()).Id;
+			await Clients.All.SendAsync("ReceivePublicMessage", roomId, UserId, userName, message, roomName);
+		}
 
-        //    if (!string.IsNullOrEmpty(userId) )
-        //    {
-        //       await Clients.User(userId).SendAsync("MessageReceived", sender, message);
-        //    }
-        //}
-    }
+		//public async Task SendMessageToAll(string user, string message)
+		//{
+		//    await Clients.All.SendAsync("MessageReceived", user, message);
+		//}
+
+		//[Authorize]
+		//public async Task SendMessageToReceiver(string sender, string receiver, string message)
+		//{
+		//    var userId = _db.Users.FirstOrDefault(u => u.Email.ToLower() == receiver.ToLower()).Id;
+
+		//    if (!string.IsNullOrEmpty(userId) )
+		//    {
+		//       await Clients.User(userId).SendAsync("MessageReceived", sender, message);
+		//    }
+		//}
+	}
 }

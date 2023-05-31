@@ -20,6 +20,21 @@ connection.on("ReceiveDeleteRoomMessage", function (maxRoom, roomId, roomName, u
     addMessage(`${userName} has deleted room  ${roomName}`);
 });
 
+connection.on("ReceivePublicMessage", function (roomId, UserId, userName, message, roomName) {
+    addMessage(`[Public Message - ${roomName}] ${userName} says ${message}`);
+})
+
+function sendPublicMessage() {
+    let inputMsg = document.getElementById('txtPublicMessage');
+    let ddlSelRoom = document.getElementById('ddlSelRoom');
+
+    let roomId = ddlSelRoom.value;
+    let roomName = ddlSelRoom.options[ddlSelRoom.selectedIndex].text;
+    var message = inputMsg.value;
+
+    connection.send("SendPublicMessage", Number(roomId), message, roomName);
+    inputMsg.value = '';
+}
 
 function addnewRoom(maxRoom) {
     let createRoomName = document.getElementById('createRoomName');

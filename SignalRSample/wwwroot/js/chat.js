@@ -1,22 +1,28 @@
-﻿var connection = new signalR.HubConnectionBuilder()
+﻿
+var connection = new signalR.HubConnectionBuilder()
     .withUrl("/hubs/chat")
     .withAutomaticReconnect([0, 1000, 5000, null])
     .build();
 
+
 connection.on("ReceiveUserConnected", function (userId, userName) {
-        addMessage(`${userName} has openned a connection`);
+
+    addMessage(`${userName} has openned a connection`);
+
 });
 
 connection.on("ReceiveUserDisconnected", function (userId, userName) {
-        addMessage(`${userName} has closed a connection`);
-}); 
+
+    addMessage(`${userName} has closed a connection`);
+
+});
 
 connection.on("ReceiveAddRoomMessage", function (maxRoom, roomId, roomName, userId, userName) {
     addMessage(`${userName} has created room  ${roomName}`);
     fillRoomDropDown();
 });
 
-connection.on("ReceiveDeleteRoomMessage", function (maxRoom, roomId, roomName, userId, userName) {
+connection.on("ReceiveDeleteRoomMessage", function (deleted, selected, roomName, userName) {
     addMessage(`${userName} has deleted room  ${roomName}`);
 });
 
@@ -39,7 +45,9 @@ function sendPublicMessage() {
 
     connection.send("SendPublicMessage", Number(roomId), message, roomName);
     inputMsg.value = '';
+
 }
+
 
 function sendPrivateMessage() {
     let inputMsg = document.getElementById('txtPrivateMessage');
@@ -54,8 +62,11 @@ function sendPrivateMessage() {
 }
 
 function addnewRoom(maxRoom) {
+
     let createRoomName = document.getElementById('createRoomName');
+
     var roomName = createRoomName.value;
+
     if (roomName == null && roomName == '') {
         return;
     }
@@ -71,19 +82,30 @@ function addnewRoom(maxRoom) {
         processData: false,
         cache: false,
         success: function (json) {
+
             /*ADD ROOM COMPLETED SUCCESSFULLY*/
             connection.send("SendAddRoomMessage", maxRoom, json.id, json.name);
             createRoomName.value = '';
+
+
         },
         error: function (xhr) {
             alert('error');
         }
     })
+
+
+
 }
 
+
+
 function deleteRoom() {
+
     let ddlDelRoom = document.getElementById('ddlDelRoom');
+
     var roomName = ddlDelRoom.options[ddlDelRoom.selectedIndex].text;
+
     let text = `Do you want to delete Chat Room ${roomName}?`;
     if (confirm(text) == false) {
         return;
@@ -92,6 +114,7 @@ function deleteRoom() {
     if (roomName == null && roomName == '') {
         return;
     }
+
     let roomId = ddlDelRoom.value;
 
     $.ajax({
@@ -105,19 +128,24 @@ function deleteRoom() {
         success: function (json) {
 
             /*ADD ROOM COMPLETED SUCCESSFULLY*/
-            connection.send("SendDeleteRoomMessage ", json.deleted, json.selected, roomName);
+            connection.send("SendDeleteRoomMessage", json.deleted, json.selected, roomName);
             fillRoomDropDown();
         },
         error: function (xhr) {
             alert('error');
         }
     })
+
+
+
 }
+
 
 document.addEventListener('DOMContentLoaded', (event) => {
     fillRoomDropDown();
     fillUserDropDown();
 })
+
 
 function fillUserDropDown() {
 
@@ -189,7 +217,7 @@ function addMessage(msg) {
     }
     let ui = document.getElementById('messagesList');
     let li = document.createElement("li");
-    li.innerHTML = msg; 
+    li.innerHTML = msg;
     ui.appendChild(li);
 }
 
